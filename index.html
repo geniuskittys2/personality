@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#eff8dc" />
+  <title>나의 성격 유형 탐험 | 6학년 실과</title>
+  <style>
+
+    :root{--ink:#274734;--muted:#6b806e;--green:#438b43;--deep:#2d6c38;--leaf:#b8e46b;--light:#eef9dc;--line:#d9ebd0;--white:#fff;--shadow:0 20px 55px rgba(64,112,49,.12)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;color:var(--ink);font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;line-height:1.65;background:radial-gradient(circle at 8% 15%,rgba(196,233,125,.55),transparent 28%),radial-gradient(circle at 95% 13%,rgba(212,244,175,.55),transparent 35%),radial-gradient(circle at 85% 90%,rgba(233,245,161,.4),transparent 35%),#f5faec}
+    .app{width:min(920px,calc(100% - 32px));margin:0 auto;padding:30px 0 54px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+    .brand{display:flex;gap:10px;align-items:center;font-weight:900;font-size:17px;letter-spacing:-.7px;color:#2e6d3a}
+    .brand-icon{width:44px;height:44px;display:grid;place-items:center;background:#f8ffed;border:2px solid #c7e7aa;border-radius:15px;box-shadow:0 6px 16px rgba(68,110,47,.08);font-size:23px}
+    .tag{font-size:12px;background:#fff;padding:7px 12px;border-radius:999px;border:1px solid #cfe7bd;color:#4d8542;font-weight:800}
+    .panel{background:rgba(255,255,252,.97);border:1.5px solid #e0edcc;border-radius:33px;box-shadow:var(--shadow);padding:clamp(24px,5vw,48px);position:relative;overflow:hidden}
+    .screen{display:none}.screen.active{display:block;animation:pop .3s ease-out}
+    @keyframes pop{from{opacity:.2;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .eyebrow{display:inline-block;background:#e4f5bf;color:#3a782b;padding:6px 14px;border-radius:999px;font-weight:900;font-size:13px}
+    h1{font-size:clamp(31px,6vw,47px);line-height:1.25;letter-spacing:-2px;margin:18px 0 14px;word-break:keep-all}
+    h1 em{font-style:normal;color:#419446}
+    h2{font-size:clamp(24px,4vw,34px);line-height:1.35;letter-spacing:-1px;margin:12px 0 14px;word-break:keep-all}
+    h3{font-size:20px;letter-spacing:-.6px;margin:0 0 12px}
+    p{margin:10px 0 0;word-break:keep-all}
+    .sub{color:var(--muted);font-size:16px;line-height:1.85;max-width:590px}
+    .hero{display:flex;align-items:center;gap:30px;justify-content:space-between}
+    .hero-text{flex:1;min-width:0}
+    .mascot{width:215px;height:215px;flex:none;border-radius:39% 61% 55% 45% / 52% 44% 56% 48%;background:radial-gradient(circle at 28% 25%,#f9ffda,#cdeb90 66%,#9bcf65);display:grid;place-items:center;border:9px solid #fff;box-shadow:0 13px 30px rgba(83,130,60,.19);position:relative;transform:rotate(-5deg)}
+    .mascot .face{font-size:102px;filter:drop-shadow(0 7px 5px #54854430);transform:rotate(5deg)}
+    .mascot .leaf{position:absolute;font-size:34px;filter:drop-shadow(0 3px 1px #50774d20)}
+    .mascot .leaf-left{left:-18px;top:21px;transform:rotate(-20deg)}.mascot .leaf-right{right:-15px;bottom:12px;transform:rotate(22deg)}
+    .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:27px}
+    .stat{background:#e3f5c5;padding:12px 18px;border-radius:15px;font-size:14px;font-weight:900;color:#36753c}.stat:nth-child(2){background:#f1f7d5;color:#657e31}.stat:nth-child(3){background:#dff4e2;color:#34775c}
+    .btn{border:0;border-radius:15px;padding:14px 24px;font-family:inherit;font-size:16px;font-weight:900;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s;line-height:1.4}
+    .btn:hover:not(:disabled){transform:translateY(-2px)}.btn:disabled{opacity:.48;cursor:not-allowed}
+    .btn:focus-visible,.choice:focus-visible,.tie-choice:focus-visible,.career-chip:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #f4c65b;outline-offset:3px}
+    .primary{background:linear-gradient(110deg,#4a9b4c,#71b844);color:#fff;box-shadow:0 9px 19px rgba(54,132,62,.23)}.primary:hover:not(:disabled){box-shadow:0 13px 23px rgba(54,132,62,.29)}
+    .secondary{background:#e8f5d9;color:#376f39}.outline{background:#fff;border:1.5px solid #bed9b4;color:#36753c}
+    .actions{display:flex;gap:11px;flex-wrap:wrap;align-items:center;margin-top:29px}
+    .note{font-size:12px;color:#748477;margin-top:17px}
+    .info{padding:19px 23px;background:#f3fbe8;border:1px solid #d6ecbf;border-radius:18px;margin-top:22px;color:#51705b;font-size:14px}
+    .progress-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:0 0 14px;font-weight:900}
+    .progress-count{color:#418b46}.progress-track{height:13px;background:#e6f2d3;border-radius:99px;overflow:hidden}.progress-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#4eac56,#b4dc5c);transition:width .35s ease}
+    .question-box{text-align:center;padding:35px 0 14px}.question-deco{font-size:46px;line-height:1.5}.question-box h2{max-width:690px;margin:12px auto 0;min-height:86px}
+    .hint{color:#648269;font-size:14px;text-align:center;margin:8px 0 22px}
+    .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+    .choice{appearance:none;border:2px solid #d7eac9;background:#f3faea;border-radius:22px;padding:25px 22px;min-height:171px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:12px;cursor:pointer;color:#345740;font-family:inherit;font-size:19px;font-weight:800;line-height:1.55;word-break:keep-all;transition:all .15s}
+    .choice:nth-child(2){background:#f7fcf0;border-color:#dfeccc}.choice:hover{border-color:#83bf70;background:#ebf7dd;transform:translateY(-3px)}.choice:nth-child(2):hover{border-color:#a6cd61;background:#f2f9df}
+    .choice.selected{border-color:#4c9b43;background:#dcf2c4;box-shadow:0 0 0 3px #c7eaae}.choice:nth-child(2).selected{border-color:#75a93f;background:#e9f5c6;box-shadow:0 0 0 3px #d9edab}
+    .choice-symbol{font-size:30px}.choice-text{font-size:18px;font-weight:850;line-height:1.65}
+    .quiz-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px}.mini{font-size:13px;color:#7b957e}
+    .tie-card{margin-top:20px;border:1.5px solid #d5e9c4;border-radius:20px;padding:21px;background:#f8fdf3}
+    .tie-card h3{font-size:17px;margin-bottom:13px}.tie-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .tie-choice{border:2px solid #dce9d3;padding:15px;border-radius:14px;background:white;text-align:left;font:inherit;cursor:pointer;color:#506b53}.tie-choice strong{display:block;color:#387342;font-size:18px}.tie-choice.active{border-color:#5fa34d;background:#e8f7d8}
+    .type-banner{display:flex;align-items:center;gap:20px;background:linear-gradient(110deg,#dff4bc,#eff9dc);border-radius:24px;padding:24px;margin-top:22px}
+    .type-icon{background:white;border-radius:22px;min-width:95px;height:95px;display:grid;place-items:center;font-size:51px;box-shadow:0 8px 16px #64853f18}
+    .type-code{font-size:clamp(25px,5vw,39px);letter-spacing:1px;color:#3e8b40;font-weight:950;line-height:1.18}.type-name{font-size:24px;font-weight:950;letter-spacing:-.5px;margin:6px 0}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+    .data-card{padding:22px;background:#fff;border:1px solid #dcebd4;border-radius:20px}.data-card p{color:#526b59;font-size:15px}
+    .career-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .career-chip{font-size:14px;background:#e4f7d7;color:#327b43;border-radius:50px;padding:7px 13px;font-weight:800;cursor:pointer;border:1px solid #c6e5b8}.career-chip:hover{background:#d3edbe}
+    .result-label{font-weight:950;font-size:14px;color:#538447;margin:0 0 12px}
+    .bars{display:grid;gap:12px}
+    .axis{display:grid;grid-template-columns:60px 1fr 60px;gap:12px;align-items:center}
+    .axis-label{font-size:13px;font-weight:900;text-align:center}.axis-bar{height:13px;background:#e5f1d7;border-radius:30px;overflow:hidden;position:relative}.axis-bar:before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:white;z-index:1}.axis-bar>span{height:100%;display:block;background:#71b352;border-radius:30px}
+    .axis-caption{font-size:12px;text-align:center;color:#79917d;margin-top:4px}
+    .worksheet{margin-top:24px;padding:22px;border:2px dashed #b7dba5;border-radius:24px;background:#fafff4}
+    .worksheet h3{margin-bottom:6px}.field-row{display:flex;gap:14px;flex-wrap:wrap;margin:19px 0 14px}
+    label.field{font-size:14px;font-weight:900;color:#466a4c;display:flex;gap:7px;align-items:center}
+    .input,.textarea{background:#fff;border:1.5px solid #c9dec0;border-radius:12px;padding:12px 13px;font:inherit;color:#304b37;max-width:100%;width:100%}
+    .field .input{width:150px}.label-block{display:block;font-weight:900;font-size:15px;margin:19px 0 8px}.value-pill{display:inline-block;padding:8px 15px;background:#e2f5d0;color:#347c3d;border-radius:30px;font-weight:950}
+    .textarea{min-height:92px;resize:vertical;line-height:1.7}.job-inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.job-inputs input{min-width:0}
+    .foot-note{margin-top:24px;text-align:center;color:#648068;font-size:12px}
+    [hidden]{display:none!important}
+    @media(max-width:690px){.app{width:min(100% - 20px,920px);padding-top:12px}.panel{border-radius:23px;padding:23px 17px}.hero{flex-direction:column-reverse;text-align:center;gap:12px}.mascot{width:139px;height:139px;border-width:6px}.mascot .face{font-size:70px}.mascot .leaf{font-size:24px}.stats{justify-content:center}h1{margin-top:10px}.sub{margin:auto}.choices{grid-template-columns:1fr;gap:11px}.choice{min-height:116px;padding:15px;flex-direction:row;gap:10px}.choice-symbol{font-size:25px}.question-box{padding-top:21px}.question-box h2{min-height:0}.result-grid{grid-template-columns:1fr}.type-banner{align-items:flex-start;gap:13px;padding:16px}.type-icon{min-width:72px;height:72px;font-size:40px}.type-name{font-size:21px}.job-inputs{grid-template-columns:1fr}.tag{font-size:10px}.quiz-foot .mini{display:none}.tie-options{grid-template-columns:1fr}}
+    @media print{*{box-shadow:none!important;animation:none!important}body{background:white!important;color:#222}header,.screen:not(.active),.print-hide,.result-grid,.result-intro,.type-banner,.foot-note,.note,.info{display:none!important}.app{width:100%;padding:0}.panel{border:0;padding:0;border-radius:0}.worksheet{border:0;background:#fff;padding:0;margin-top:0}.worksheet:before{content:'6학년 실과 · 나의 성격 유형 탐험';display:block;font-weight:bold;color:#333;margin-bottom:12px}.textarea,.input{border:1px solid #888!important}.screen.active{display:block!important}.worksheet h3{font-size:22px}.label-block{margin-top:18px}.field-row{margin-top:13px}.type-code-print{font-weight:900}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="print-hide"><div class="brand"><span class="brand-icon" aria-hidden="true">🌱</span> 초록빛 마음 탐험 연구소</div><span class="tag">6학년 실과 · 진로 탐색</span></header>
+  <main class="panel">
+    <section class="screen active" id="home" aria-labelledby="home-title">
+      <div class="hero">
+        <div class="hero-text">
+          <span class="eyebrow">🍀 나만의 성격 숲을 탐험해요</span>
+          <h1 id="home-title">나의 <em>성격 유형</em><br>탐험대!</h1>
+          <p class="sub">나는 어떤 방식으로 생각하고, 친구들과 어울리고, 계획을 세울까요? 40개의 질문에 답하며 나만의 성격 지도를 완성해 보아요.</p>
+        </div>
+        <div class="mascot" aria-hidden="true"><span class="face">🐸</span><span class="leaf leaf-left">🍀</span><span class="leaf leaf-right">🌿</span></div>
+      </div>
+      <div class="stats"><span class="stat">🌿 질문 40개</span><span class="stat">🍃 성격 유형 16가지</span><span class="stat">☀️ 정답은 없어요!</span></div>
+      <div class="actions"><button type="button" class="btn primary" id="startBtn">초록 숲 탐험 시작! 🌿</button></div>
+      <div class="info">💡 <strong>탐험 약속</strong> · 맞거나 틀린 답은 없어요. 실제 나와 더 가까운 모습을 골라 주세요. 두 모습이 모두 좋다면, 평소에 조금 더 자주 하는 쪽을 선택해요. 검사 결과는 나를 알아보는 참고 자료이며, 나의 모든 모습을 결정하지 않아요.</div>
+    </section>
+    <section class="screen" id="quiz" aria-labelledby="quiz-title">
+      <div class="progress-head"><span>🌱 성격 씨앗을 모으는 중!</span><span class="progress-count" id="progressText">01 / 40</span></div>
+      <div class="progress-track" role="progressbar" aria-label="검사 진행률" aria-valuemin="0" aria-valuemax="40" aria-valuenow="0" id="progress"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="question-box"><div class="question-deco" id="qEmoji" aria-hidden="true">🍀</div><h2 id="quiz-title"></h2></div>
+      <p class="hint">👇 두 가지 중 나에게 더 가까운 모습을 골라 주세요.</p>
+      <div class="choices" id="choices"></div>
+      <div class="quiz-foot"><button type="button" class="btn secondary" id="prevBtn">← 이전 질문</button><span class="mini">내 마음을 솔직하게 선택해요 ♡</span><button type="button" class="btn primary" id="nextBtn" disabled>다음 질문 →</button></div>
+    </section>
+    <section class="screen" id="ties" aria-labelledby="tie-title">
+      <span class="eyebrow">🌿 마지막 나뭇잎 하나 더!</span>
+      <h2 id="tie-title">두 모습이 똑같이 나왔어요!</h2>
+      <p class="sub">이렇게 같은 수가 나오는 건 자연스러워요. 아래 설명 중 <strong>평소 나에게 조금 더 가까운 쪽</strong>을 골라 보세요. 둘 다 내 모습이어도 괜찮아요!</p>
+      <div id="tieContainer"></div>
+      <div class="actions"><button type="button" class="btn secondary" id="tieBackBtn">← 마지막 질문으로</button><button type="button" class="btn primary" id="tieDoneBtn">결과 확인하기 ✨</button></div>
+    </section>
+    <section class="screen" id="result" aria-labelledby="result-title">
+      <div class="result-intro"><span class="eyebrow">🌳 나의 성격 숲 완성!</span><h2 id="result-title">나만의 특별한 모습을 발견했어요!</h2><p class="sub">교과서에 나온 성격 유형 중 오늘의 나와 가까운 모습을 알아봐요. 이 결과는 고정된 성격이나 미래 직업을 정하는 답이 아니랍니다.</p></div>
+      <div class="type-banner"><div class="type-icon" id="typeIcon" aria-hidden="true">🌟</div><div><div class="result-label">오늘 발견한 나의 유형</div><div class="type-code" id="typeCode">ISTJ</div><div class="type-name" id="typeName">세상의 소금형</div></div></div>
+      <div class="result-grid">
+        <div class="data-card"><h3>💗 나의 성격 특징</h3><p id="typeDesc"></p></div>
+        <div class="data-card"><h3>💼 관련 직업 살펴보기</h3><p>아래 직업을 누르면 활동지에 적을 수 있어요.</p><div class="career-chips" id="careerChips"></div></div>
+      </div>
+      <div class="data-card print-hide"><h3>📊 네 가지 성격 기준에서 내가 고른 답</h3><div class="bars" id="scoreBars"></div><p class="note">숫자는 질문에서 고른 횟수예요. 능력이나 성격의 우열, 정확도를 나타내는 점수가 아니에요.</p></div>
+      <section class="worksheet" id="worksheet" aria-labelledby="worksheet-title">
+        <h3 id="worksheet-title">📒 나의 진로 탐색 활동지</h3>
+        <p style="color:#83859a;font-size:14px;margin-top:0">아래에 나의 생각을 정리한 후 교과서나 활동지에 옮겨 적어 보아요.</p>
+        <div class="field-row"><label class="field">학년·반 <input class="input" type="text" id="classInput" maxlength="20" placeholder="예: 6학년 1반" autocomplete="off"></label><label class="field">이름 <input class="input" type="text" id="nameInput" maxlength="20" placeholder="이름 입력" autocomplete="off"></label></div>
+        <div><span class="label-block">① 나의 성격 유형</span><span class="value-pill" id="worksheetType">ISTJ · 세상의 소금형</span></div>
+        <div><label class="label-block" for="traitsInput">② 나의 성격 특징 (1~2줄)</label><textarea class="textarea" id="traitsInput" rows="3" maxlength="220" placeholder="위의 성격 특징을 참고해 내 말로 1~2줄 적어 보세요."></textarea><div class="actions" style="margin-top:8px"><button type="button" class="btn outline print-hide" id="fillTraitsBtn" style="padding:9px 14px;font-size:13px">특징 문장 가져오기 ✍️</button></div></div>
+        <div><span class="label-block">③ 나의 성격 유형과 관련된 직업 3가지</span><div class="job-inputs"><input class="input" type="text" aria-label="관련 직업 1" id="job1" maxlength="40" placeholder="첫 번째 직업"><input class="input" type="text" aria-label="관련 직업 2" id="job2" maxlength="40" placeholder="두 번째 직업"><input class="input" type="text" aria-label="관련 직업 3" id="job3" maxlength="40" placeholder="세 번째 직업"></div></div>
+      </section>
+      <div class="actions print-hide"><button class="btn primary" type="button" id="printBtn">🖨️ 활동지 인쇄 / PDF 저장</button><button class="btn outline" type="button" id="saveBtn">💾 결과 텍스트 저장</button><button class="btn secondary" type="button" id="retryBtn">🔁 다시 탐험하기</button></div>
+      <p class="note print-hide">✔️ 컴퓨터·휴대폰에서 바로 실행할 수 있어요. 입력한 내용은 서버로 전송되지 않으며, 이 페이지를 새로고침하면 검사 결과가 초기화됩니다.</p>
+    </section>
+  </main>
+  <p class="foot-note">🌱 학교 수업을 위한 비공식 MBTI 유사 성격 탐색 활동 · 공식 심리 검사가 아닙니다. · 어떤 유형도 더 좋거나 나쁘지 않아요.</p>
+</div>
+<script>
+'use strict';
+const QUESTIONS = [
+  {q:'쉬는 시간에 더 하고 싶은 일은?',p:'EI',e:'🌼',a:['여러 친구와 이야기하며 즐기기','E'],b:['가까운 친구와 조용히 이야기하기','I']},
+  {q:'새로운 만들기 활동을 할 때 나는?',p:'SN',e:'✂️',a:['준비물과 만드는 순서를 먼저 살펴봐요','S'],b:['완성하면 어떤 모습일지 먼저 상상해요','N']},
+  {q:'친구들이 의견을 나눌 때 나는?',p:'TF',e:'💬',a:['생각을 뒷받침하는 이유를 살펴봐요','T'],b:['친구들이 어떻게 느낄지 생각해요','F']},
+  {q:'주말에 하고 싶은 일이 생기면?',p:'JP',e:'🛼',a:['언제 할지 미리 정해요','J'],b:['그날 기분과 상황에 맞춰 정해요','P']},
+  {q:'새 학기에 친구를 사귈 때 나는?',p:'EI',e:'🎈',a:['여러 친구와 인사하며 친해져요','E'],b:['친해지고 싶은 친구에게 천천히 다가가요','I']},
+  {q:'과학 시간에 관찰할 때 나는?',p:'SN',e:'🔍',a:['눈에 보이는 모습을 자세히 기록해요','S'],b:['어떤 새로운 가능성이 있을지 생각해요','N']},
+  {q:'모둠에서 방법을 고를 때 나는?',p:'TF',e:'🧩',a:['어떤 방법이 효과적일지 비교해요','T'],b:['어떤 방법이 모두에게 편안할지 생각해요','F']},
+  {q:'숙제를 할 때 나는?',p:'JP',e:'📚',a:['순서를 정해서 하나씩 해요','J'],b:['하고 싶은 것부터 골라 시작해요','P']},
+  {q:'좋아하는 주제로 발표할 때 나는?',p:'EI',e:'🎤',a:['이야기하면서 생각이 더 떠올라요','E'],b:['생각을 정리한 다음 말해요','I']},
+  {q:'새로운 장소를 구경할 때 나는?',p:'SN',e:'🏕️',a:['눈앞의 모습을 꼼꼼히 살펴봐요','S'],b:['여기서 할 수 있는 새로운 활동을 떠올려요','N']},
+  {q:'친구에게 조언을 해 준다면?',p:'TF',e:'💌',a:['도움이 될 만한 방법을 먼저 말해요','T'],b:['친구의 마음을 먼저 물어봐요','F']},
+  {q:'체험학습을 준비할 때 나는?',p:'JP',e:'🎒',a:['준비물을 목록으로 적어요','J'],b:['상황에 맞춰 필요한 것을 챙겨요','P']},
+  {q:'모둠 게임을 시작하면 나는?',p:'EI',e:'🎲',a:['친구들과 이야기하며 분위기를 띄워요','E'],b:['게임 방법을 생각하며 차분히 참여해요','I']},
+  {q:'동화를 읽을 때 나는?',p:'SN',e:'📖',a:['이야기에 나온 장면을 자세히 떠올려요','S'],b:['이야기 다음에 벌어질 일을 상상해요','N']},
+  {q:'학교 행사 아이디어를 고를 때 나는?',p:'TF',e:'🎪',a:['시간과 준비물을 비교해서 골라요','T'],b:['참여하는 친구들의 즐거움을 생각해 골라요','F']},
+  {q:'내 책상이나 준비물을 정리할 때 나는?',p:'JP',e:'🧸',a:['정해 둔 자리에 맞춰 놓아요','J'],b:['나만의 편한 방식으로 놓아요','P']},
+  {q:'새로운 친구들을 만났을 때 나는?',p:'EI',e:'🤝',a:['먼저 말을 걸며 알아가요','E'],b:['이야기를 나누다 보면 천천히 친해져요','I']},
+  {q:'미술 작품을 볼 때 나는?',p:'SN',e:'🎨',a:['작품의 색과 모양을 자세히 살펴봐요','S'],b:['작품에 담긴 뜻을 상상해 봐요','N']},
+  {q:'모둠이 규칙을 정한다면 나는?',p:'TF',e:'🍀',a:['누구에게나 똑같이 적용되는지 살펴봐요','T'],b:['친구들의 여러 사정을 함께 고려해요','F']},
+  {q:'여행 가기 전 나는?',p:'JP',e:'🚂',a:['가고 싶은 곳을 미리 정리해요','J'],b:['그곳에서 발견할 새로운 재미를 기대해요','P']},
+  {q:'좋은 생각이 떠올랐을 때 나는?',p:'EI',e:'💡',a:['친구와 이야기하면서 생각을 키워요','E'],b:['혼자 메모하면서 생각을 키워요','I']},
+  {q:'새 놀이 방법을 배울 때 나는?',p:'SN',e:'🪁',a:['실제로 해 보면서 익혀요','S'],b:['새로운 방법으로 바꿀 생각을 해요','N']},
+  {q:'게임의 결과를 돌아볼 때 나는?',p:'TF',e:'🏆',a:['어떤 선택이 결과에 도움이 됐는지 살펴봐요','T'],b:['함께한 친구들이 즐거웠는지 떠올려요','F']},
+  {q:'모둠 과제를 진행할 때 나는?',p:'JP',e:'📝',a:['진행 순서를 먼저 정하는 편이에요','J'],b:['진행하며 좋은 생각을 더해 가는 편이에요','P']},
+  {q:'교실에서 궁금한 점이 생기면 나는?',p:'EI',e:'🙋',a:['선생님이나 친구에게 바로 질문해요','E'],b:['먼저 혼자 생각해 보고 질문해요','I']},
+  {q:'새 물건을 사용해 볼 때 나는?',p:'SN',e:'🔮',a:['사용 방법을 살펴보고 시작해요','S'],b:['이 물건으로 무엇을 할지 먼저 떠올려요','N']},
+  {q:'친구와 함께 무엇을 선택할 때 나는?',p:'TF',e:'🌷',a:['이유를 나누고 기준에 맞게 정해요','T'],b:['서로 원하는 것을 듣고 정해요','F']},
+  {q:'방과 후 자유 시간이 생기면 나는?',p:'JP',e:'🍭',a:['할 일을 정해 놓고 보내요','J'],b:['그때 끌리는 활동을 골라요','P']},
+  {q:'새로운 동아리를 고를 때 기대되는 것은?',p:'EI',e:'🎵',a:['활동하며 다양한 친구를 만나는 것','E'],b:['내가 좋아하는 활동에 집중하는 것','I']},
+  {q:'미래의 교실을 상상할 때 나는?',p:'SN',e:'🚀',a:['편리하게 쓸 수 있는 물건을 구체적으로 떠올려요','S'],b:['지금 없는 특별한 기능을 상상해요','N']},
+  {q:'친구에게 책을 추천한다면 나는?',p:'TF',e:'📗',a:['책의 내용과 좋은 점을 설명해요','T'],b:['친구가 좋아할 이야기를 생각해요','F']},
+  {q:'도서관에서 책을 읽을 때 나는?',p:'JP',e:'📚',a:['읽을 분량을 정하고 시작해요','J'],b:['흥미로운 부분을 따라 자유롭게 읽어요','P']},
+  {q:'새로운 놀이 방법이 떠오르면 나는?',p:'EI',e:'🪇',a:['친구들과 이야기하면서 놀이를 완성해요','E'],b:['생각을 정리한 뒤 친구들에게 알려줘요','I']},
+  {q:'새로운 주제를 배울 때 나는?',p:'SN',e:'🌿',a:['실제 사진과 예시를 보며 이해해요','S'],b:['새로운 원리와 가능성을 생각해요','N']},
+  {q:'학교 행사 순서를 정할 때 나는?',p:'TF',e:'🎟️',a:['시간과 이동 거리가 알맞은지 살펴봐요','T'],b:['참여하는 친구들이 즐거울지 생각해요','F']},
+  {q:'방을 새롭게 꾸밀 때 나는?',p:'JP',e:'🪑',a:['어디에 무엇을 둘지 먼저 정해요','J'],b:['놓아 보면서 어울리는 자리를 찾아요','P']},
+  {q:'학교 축제에서 더 끌리는 활동은?',p:'EI',e:'🎡',a:['여러 친구를 만나 함께 진행하는 활동','E'],b:['좋아하는 일에 집중해 완성하는 활동','I']},
+  {q:'교실을 새롭게 꾸민다면 나는?',p:'SN',e:'🪴',a:['쓸 수 있는 재료와 배치를 먼저 살펴봐요','S'],b:['특별한 꾸밈을 자유롭게 상상해요','N']},
+  {q:'모둠의 작품을 소개할 때 나는?',p:'TF',e:'🖼️',a:['주제가 잘 드러났는지 살펴봐요','T'],b:['작품에 담긴 친구들의 마음을 살펴봐요','F']},
+  {q:'학급 발표회를 준비할 때 나는?',p:'JP',e:'🎭',a:['연습 일정을 미리 정하고 따라가요','J'],b:['연습하면서 새로운 생각도 더해 가요','P']},
+];
+// 교과서 111쪽의 성격 유형 명칭, 특징과 관련 직업을 초등학생용으로 다듬은 안내입니다.
+const TYPES = {
+  ISTJ:{name:'세상의 소금형',icon:'🧂',desc:'신중하고 집중력과 책임감이 강해요. 옳다고 생각하는 일은 끈기 있게 해내려고 해요.',jobs:['의사','약사','은행원','공무원','회계사','행정가']},
+  ISFJ:{name:'임금 뒤 권력형',icon:'📋',desc:'성실하고 침착해요. 다른 사람의 감정과 입장을 잘 헤아리고 도와주려고 해요.',jobs:['사회복지사','간호사','비서','사서','실내 장식가']},
+  INFJ:{name:'예언자형',icon:'👁️',desc:'창의력과 통찰력이 있으며 신념과 열정을 소중히 여겨요. 자신의 생각과 꿈을 이루려고 해요.',jobs:['작가','동시 통역가','작곡가','상담사','성직자']},
+  INTJ:{name:'과학자형',icon:'🔬',desc:'독창적이고 목표를 향해 노력해요. 결단력과 인내심을 가지고 자신의 계획을 이루려고 해요.',jobs:['컴퓨터 프로그래머','천문학자','논설위원','기자']},
+  ISTP:{name:'백과사전형',icon:'📚',desc:'주변을 객관적으로 살피고 자료를 잘 정리해요. 기계나 도구를 다루는 일에도 관심이 많아요.',jobs:['투자 전문가','조종사','물리치료사','방사선사']},
+  ISFP:{name:'성인군자형',icon:'🫶',desc:'친절하고 겸손하며 너그러워요. 자기 생각을 다른 사람에게 강요하기보다 서로를 존중해요.',jobs:['교사','작가','사진가','물리치료사','미용사','요리사']},
+  INFP:{name:'잔다르크형',icon:'🕯️',desc:'성실하고 책임감이 강해요. 마음속에 열정을 품고 소중한 가치를 실천하려고 해요.',jobs:['음악가','미술가','상담사','작가','성직자']},
+  INTP:{name:'아이디어 뱅크형',icon:'💡',desc:'조용하지만 관심 있는 일에는 호기심이 많아요. 새로운 지식을 탐구하고 알아가는 것을 좋아해요.',jobs:['수학자','물리학자','철학자','고고학자']},
+  ESTP:{name:'활동가형',icon:'📣',desc:'문제를 해결하고 새로운 상황에 잘 적응해요. 직접 체험하는 활동을 즐기고 순발력이 뛰어나요.',jobs:['기자','경찰관','소방관','운동선수','해설 위원']},
+  ESFP:{name:'사교형',icon:'😄',desc:'사교적이고 활동적이에요. 주변에 관심이 많고 사람이나 동물과 어울리는 것을 좋아해요.',jobs:['비서','쇼핑 호스트','동물 훈련사','희극인']},
+  ENFP:{name:'스파크형',icon:'🎉',desc:'열정적이고 재능이 많아요. 상상력이 풍부하고 늘 새로운 가능성을 찾아보려고 해요.',jobs:['아나운서','광고 기획자','요리사','예술가','상담사']},
+  ENTP:{name:'발명가형',icon:'🚀',desc:'창의력이 풍부하고 복잡한 일도 새로운 방법으로 해결하려고 해요. 주변의 변화를 빠르게 알아채요.',jobs:['발명가','게임 기획자','정치가','배우','사진가']},
+  ESTJ:{name:'사업가형',icon:'🎯',desc:'일을 계획하고 추진하는 능력이 뛰어나요. 목표가 확실한 일을 책임감 있게 해내려고 해요.',jobs:['사업가','전문 경영인','정치인','판사','직업 군인']},
+  ESFJ:{name:'친선도모형',icon:'🤝',desc:'친절하고 친구들과 잘 어울리며 말을 재미있게 해요. 인내심과 봉사 정신도 강해요.',jobs:['행사 기획자','승무원','간호사','언어치료사']},
+  ENFJ:{name:'언변능숙형',icon:'💬',desc:'사람들과의 화합을 중요하게 여겨요. 미래를 계획하고 함께하는 사람들을 이끌어 가는 힘이 있어요.',jobs:['교사','성직자','상담사','외교관','홍보 전문가']},
+  ENTJ:{name:'지도자형',icon:'👑',desc:'일의 큰 흐름을 보고 결단력 있게 행동해요. 계획을 세워 여러 사람과 함께 일을 추진해요.',jobs:['경영인','감독','도시 설계사','판사','검사','변호사']}
+};
+const PAIRS = [
+  {key:'EI',title:'친구와 어울리고 에너지를 얻는 모습',first:['E','친구들과 이야기하며 생각이 더 잘 떠올라요'],second:['I','혼자 생각을 정리하면 더 편안해요']},
+  {key:'SN',title:'정보를 살펴보는 모습',first:['S','눈앞의 사실과 자세한 모습을 먼저 살펴봐요'],second:['N','새로운 뜻과 가능성을 먼저 상상해요']},
+  {key:'TF',title:'선택할 때 중요하게 생각하는 모습',first:['T','이유와 기준을 꼼꼼히 살펴봐요'],second:['F','사람들의 마음을 함께 생각해요']},
+  {key:'JP',title:'일을 진행할 때 편안한 모습',first:['J','계획을 세우고 차례로 진행하는 편이에요'],second:['P','상황에 따라 방법을 바꾸며 진행하는 편이에요']}
+];
+let step=0;
+let answers=Array(QUESTIONS.length).fill(null);
+let tieChoices={};
+let currentType='';
+const $=id=>document.getElementById(id);
+function screen(id){document.querySelectorAll('.screen').forEach(el=>el.classList.toggle('active',el.id===id));window.scrollTo({top:0,behavior:'instant'});}
+function renderQuestion(){
+  const q=QUESTIONS[step], chosen=answers[step];
+  $('progressText').textContent=`${String(step+1).padStart(2,'0')} / ${QUESTIONS.length}`;
+  $('progressFill').style.width=`${(step+1)/QUESTIONS.length*100}%`;
+  $('progress').setAttribute('aria-valuenow',String(step+1));
+  $('qEmoji').textContent=q.e;
+  $('quiz-title').textContent=q.q;
+  const holder=$('choices');holder.replaceChildren();
+  (Math.floor(step/4)%2 ? [q.b,q.a] : [q.a,q.b]).forEach((choice,ix)=>{
+    const btn=document.createElement('button');btn.type='button';btn.className='choice'+(chosen===choice[1]?' selected':'');
+    btn.setAttribute('aria-pressed',String(chosen===choice[1]));
+    const emoji=document.createElement('span');emoji.className='choice-symbol';emoji.textContent=ix===0?'🍃':'🌼';
+    const text=document.createElement('span');text.className='choice-text';text.textContent=choice[0];
+    btn.append(emoji,text);
+    btn.addEventListener('click',()=>{
+      answers[step]=choice[1];
+      holder.querySelectorAll('.choice').forEach(x=>{x.classList.remove('selected');x.setAttribute('aria-pressed','false')});
+      btn.classList.add('selected');btn.setAttribute('aria-pressed','true');$('nextBtn').disabled=false;
+    });
+    holder.append(btn);
+  });
+  $('prevBtn').disabled=step===0;
+  $('nextBtn').disabled=!chosen;
+  $('nextBtn').textContent=step===QUESTIONS.length-1?'검사 결과 보기 ✨':'다음 질문 →';
+}
+function score(){const r={E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};for(const v of answers){if(v)r[v]++}return r;}
+function tiedPairs(s){return PAIRS.filter(p=>s[p.first[0]]===s[p.second[0]]);}
+function finishQuiz(){if(answers.some(a=>!a)){alert('아직 답하지 않은 질문이 있어요.');return;}const s=score();const ties=tiedPairs(s);if(ties.length){renderTies(ties);screen('ties')}else showResult(s);}
+function renderTies(ties){const holder=$('tieContainer');holder.replaceChildren();ties.forEach(p=>{const card=document.createElement('div');card.className='tie-card';const h=document.createElement('h3');h.textContent=`🌿 ${p.title}`;card.append(h);const options=document.createElement('div');options.className='tie-options';[p.first,p.second].forEach(pair=>{const b=document.createElement('button');b.type='button';b.className='tie-choice'+(tieChoices[p.key]===pair[0]?' active':'');b.setAttribute('aria-pressed',String(tieChoices[p.key]===pair[0]));const strong=document.createElement('strong');strong.textContent=pair[0];const txt=document.createElement('span');txt.textContent=pair[1];b.append(strong,txt);b.addEventListener('click',()=>{tieChoices[p.key]=pair[0];[...options.children].forEach(btn=>{btn.classList.remove('active');btn.setAttribute('aria-pressed','false')});b.classList.add('active');b.setAttribute('aria-pressed','true');$('tieDoneBtn').disabled=ties.some(x=>!tieChoices[x.key]);});options.append(b)});card.append(options);holder.append(card)});$('tieDoneBtn').disabled=ties.some(p=>!tieChoices[p.key]);}
+function buildType(s){return PAIRS.map(p=>s[p.first[0]]>s[p.second[0]]?p.first[0]:s[p.first[0]]<s[p.second[0]]?p.second[0]:tieChoices[p.key]).join('');}
+function showResult(s){const type=buildType(s),data=TYPES[type];if(!data){alert('결과를 확인할 수 없어요.');return;}currentType=type;
+  $('typeIcon').textContent=data.icon;$('typeCode').textContent=type;$('typeName').textContent=data.name;$('typeDesc').textContent=data.desc;
+  $('worksheetType').textContent=type+' · '+data.name;
+  $('traitsInput').value='';['job1','job2','job3'].forEach(id=>$(id).value='');
+  const careers=$('careerChips');careers.replaceChildren();data.jobs.forEach(job=>{const b=document.createElement('button');b.type='button';b.className='career-chip';b.textContent='＋ '+job;b.title='활동지에 이 직업 추가하기';b.addEventListener('click',()=>{const slot=['job1','job2','job3'].map(id=>$(id)).find(input=>!input.value.trim());if(slot){slot.value=job;slot.focus()}else alert('직업 칸 3개가 모두 채워졌어요. 바꾸려면 칸의 글자를 직접 고쳐 주세요.');});careers.append(b)});
+  const bars=$('scoreBars');bars.replaceChildren();const names={E:'활발하게 표현',I:'차분하게 생각',S:'구체적인 정보',N:'새로운 가능성',T:'이유와 기준',F:'사람의 마음',J:'미리 계획',P:'상황에 맞게'};
+  PAIRS.forEach(p=>{const [a,b]=[p.first[0],p.second[0]],total=s[a]+s[b];const line=document.createElement('div');const grid=document.createElement('div');grid.className='axis';const left=document.createElement('span');left.className='axis-label';left.textContent=`${a} ${s[a]}개`;const middle=document.createElement('div');middle.className='axis-bar';middle.setAttribute('aria-label',`${a} ${s[a]}개, ${b} ${s[b]}개`);const fill=document.createElement('span');fill.style.width=`${s[a]/total*100}%`;middle.append(fill);const right=document.createElement('span');right.className='axis-label';right.textContent=`${b} ${s[b]}개`;grid.append(left,middle,right);const tip=document.createElement('div');tip.className='axis-caption';tip.textContent=`${names[a]} ↔ ${names[b]}`;line.append(grid,tip);bars.append(line)});
+  screen('result');
+}
+$('startBtn').addEventListener('click',()=>{step=0;answers=Array(QUESTIONS.length).fill(null);tieChoices={};renderQuestion();screen('quiz')});
+$('prevBtn').addEventListener('click',()=>{if(step>0){step--;renderQuestion()}});
+$('nextBtn').addEventListener('click',()=>{if(!answers[step])return;if(step===QUESTIONS.length-1)finishQuiz();else{step++;renderQuestion();window.scrollTo({top:0,behavior:'instant'});}});
+$('tieBackBtn').addEventListener('click',()=>{step=QUESTIONS.length-1;renderQuestion();screen('quiz')});
+$('tieDoneBtn').addEventListener('click',()=>{const s=score();if(tiedPairs(s).every(p=>!!tieChoices[p.key]))showResult(s)});
+$('fillTraitsBtn').addEventListener('click',()=>{$('traitsInput').value=TYPES[currentType].desc;$('traitsInput').focus()});
+$('printBtn').addEventListener('click',()=>window.print());
+$('saveBtn').addEventListener('click',()=>{
+  const type=TYPES[currentType];if(!type)return;
+  const name=$('nameInput').value.trim();
+  const message=[ '나의 성격 유형 탐험 - 실과 진로 탐색 활동지', '학년·반: '+$('classInput').value.trim(), '이름: '+name, '', '① 나의 성격 유형: '+currentType+' · '+type.name, '② 나의 성격 특징:', $('traitsInput').value.trim()||type.desc, '', '③ 관련 직업 3가지:', ...['job1','job2','job3'].map((id,i)=>`${i+1}. `+$(id).value.trim()), '', '※ 학교 수업용 비공식 성격 탐색 활동 결과입니다.' ].join('\n');
+  const blob=new Blob(['\ufeff'+message],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='나의_성격_탐험_결과.txt';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+});
+$('retryBtn').addEventListener('click',()=>{if(confirm('처음부터 다시 검사할까요? 지금까지 작성한 답과 활동지 내용은 초기화돼요.')){$('startBtn').click();}});
+</script>
+</body>
+</html>
